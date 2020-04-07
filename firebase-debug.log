@@ -1,0 +1,216 @@
+[debug] [2020-03-30T06:47:55.564Z] ----------------------------------------------------------------------
+[debug] [2020-03-30T06:47:55.568Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Cykatoro\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve
+[debug] [2020-03-30T06:47:55.568Z] CLI Version:   7.16.1
+[debug] [2020-03-30T06:47:55.568Z] Platform:      win32
+[debug] [2020-03-30T06:47:55.568Z] Node Version:  v12.16.1
+[debug] [2020-03-30T06:47:55.571Z] Time:          Mon Mar 30 2020 13:47:55 GMT+0700 (Western Indonesia Time)
+[debug] [2020-03-30T06:47:55.571Z] ----------------------------------------------------------------------
+[debug] [2020-03-30T06:47:55.571Z] 
+[debug] [2020-03-30T06:47:55.587Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-03-30T06:47:55.588Z] > authorizing via signed-in user
+[debug] [2020-03-30T06:47:55.588Z] [iam] checking project nori-api-24aca for permissions ["firebase.projects.get"]
+[debug] [2020-03-30T06:47:55.594Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/nori-api-24aca:testIamPermissions  
+
+[debug] [2020-03-30T06:47:57.912Z] <<< HTTP RESPONSE 200
+[debug] [2020-03-30T06:47:57.919Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/nori-api-24aca  
+ 
+[debug] [2020-03-30T06:47:58.429Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'C:\node\test-firebase-three'...
+[info] 
+[debug] [2020-03-30T06:47:58.477Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/nori-api-24aca/webApps/-/config  
+ 
+[warn] !  Your requested "node" version "8" doesn't match your global version "12"
+[info] +  functions: functions emulator started at http://localhost:5001
+[debug] [2020-03-30T06:48:01.022Z] <<< HTTP RESPONSE 200
+[info] i  functions: Watching "C:\node\test-firebase-three\functions" for Cloud Functions...
+[debug] [2020-03-30T06:48:01.084Z] [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-03-30T06:48:01.085Z] [worker-pool] Adding worker with key ~diagnostic~, total=1
+[debug] [2020-03-30T06:48:01.085Z] [worker-pool] submitWork(triggerId=)
+[debug] [2020-03-30T06:48:01.086Z] [worker-~diagnostic~-2b25be87-1e76-46ae-9ccd-60296cf058f1]: Assigning socketPath: \\?\pipe\C:\node\test-firebase-three\functions\17856
+[debug] [2020-03-30T06:48:01.086Z] [worker-~diagnostic~-2b25be87-1e76-46ae-9ccd-60296cf058f1]: BUSY
+[info] i  hosting: Serving hosting files from: public
+[info] +  hosting: Local server: http://localhost:5000
+[debug] [2020-03-30T06:48:02.016Z] [runtime-status] [17856] Functions runtime initialized. {"cwd":"C:\\node\\test-firebase-three\\functions","node_version":"12.16.1"}
+[debug] [2020-03-30T06:48:02.018Z] [runtime-status] [17856] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true,"pubsub_emulator":true}
+[debug] [2020-03-30T06:48:02.026Z] [runtime-status] [17856] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2020-03-30T06:48:02.031Z] [runtime-status] [17856] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T06:48:02.034Z] [runtime-status] [17856] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[info] +  functions[app]: http function initialized (http://localhost:5001/nori-api-24aca/us-central1/app).
+[debug] [2020-03-30T06:48:02.663Z] [worker-~diagnostic~-2b25be87-1e76-46ae-9ccd-60296cf058f1]: IDLE
+[info] [hosting] Rewriting /api to http://localhost:5001/nori-api-24aca/us-central1/app for local Function app
+[debug] [2020-03-30T06:48:08.322Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-03-30T06:48:08.322Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-03-30T06:48:08.324Z] Accepted request GET /nori-api-24aca/us-central1/app/api --> app
+[debug] [2020-03-30T06:48:08.331Z] [worker-pool] addWorker(app)
+[debug] [2020-03-30T06:48:08.332Z] [worker-pool] Adding worker with key app, total=1
+[debug] [2020-03-30T06:48:08.332Z] [worker-pool] submitWork(triggerId=app)
+[debug] [2020-03-30T06:48:08.332Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: Assigning socketPath: \\?\pipe\C:\node\test-firebase-three\functions\1420
+[debug] [2020-03-30T06:48:08.332Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: BUSY
+[debug] [2020-03-30T06:48:09.256Z] [runtime-status] [1420] Functions runtime initialized. {"cwd":"C:\\node\\test-firebase-three\\functions","node_version":"12.16.1"}
+[debug] [2020-03-30T06:48:09.259Z] [runtime-status] [1420] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true,"pubsub_emulator":true}
+[debug] [2020-03-30T06:48:09.266Z] [runtime-status] [1420] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2020-03-30T06:48:09.270Z] [runtime-status] [1420] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T06:48:09.273Z] [runtime-status] [1420] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T06:48:10.164Z] [runtime-status] [1420] Trigger "app" has been found, beginning invocation!
+[info] i  functions: Beginning execution of "app"
+[debug] [2020-03-30T06:48:10.168Z] [runtime-status] [1420] triggerDefinition {"httpsTrigger":{},"name":"app","entryPoint":"app"}
+[debug] [2020-03-30T06:48:10.169Z] [runtime-status] [1420] Running app in mode HTTPS
+[debug] [2020-03-30T06:48:10.178Z] [runtime-status] [1420] Attempting to listen to socketPath: \\?\pipe\C:\node\test-firebase-three\functions\1420
+[debug] [2020-03-30T06:48:10.192Z] [functions] Runtime ready! Sending request!
+[debug] [2020-03-30T06:48:10.223Z] [runtime-status] [1420] Ephemeral server handling GET request
+[debug] [2020-03-30T06:48:10.255Z] [runtime-status] [1420] Ephemeral server survived.
+[info] i  functions: Finished "app" in ~1s
+[debug] [2020-03-30T06:48:10.274Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: IDLE
+[debug] [2020-03-30T06:48:10.274Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[info] [hosting] Rewriting /api/users/create to http://localhost:5001/nori-api-24aca/us-central1/app for local Function app
+[debug] [2020-03-30T06:49:06.491Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-03-30T06:49:06.491Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-03-30T06:49:06.491Z] Accepted request GET /nori-api-24aca/us-central1/app/api/users/create --> app
+[debug] [2020-03-30T06:49:06.491Z] [worker-pool] submitWork(triggerId=app)
+[debug] [2020-03-30T06:49:06.491Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: Assigning socketPath: \\?\pipe\C:\node\test-firebase-three\functions\1420
+[debug] [2020-03-30T06:49:06.491Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: BUSY
+[debug] [2020-03-30T06:49:06.492Z] [runtime-status] [1420] Trigger "app" has been found, beginning invocation!
+[info] i  functions: Beginning execution of "app"
+[debug] [2020-03-30T06:49:06.501Z] [runtime-status] [1420] triggerDefinition {"httpsTrigger":{},"name":"app","entryPoint":"app"}
+[debug] [2020-03-30T06:49:06.501Z] [runtime-status] [1420] Running app in mode HTTPS
+[debug] [2020-03-30T06:49:06.501Z] [runtime-status] [1420] Attempting to listen to socketPath: \\?\pipe\C:\node\test-firebase-three\functions\1420
+[debug] [2020-03-30T06:49:06.505Z] [functions] Runtime ready! Sending request!
+[debug] [2020-03-30T06:49:06.512Z] [runtime-status] [1420] Ephemeral server handling GET request
+[debug] [2020-03-30T06:49:06.789Z] [runtime-status] [1420] Ephemeral server survived.
+[info] i  functions: Finished "app" in ~1s
+[debug] [2020-03-30T06:49:08.269Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: IDLE
+[debug] [2020-03-30T06:49:08.269Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[info] [hosting] Rewriting /api to http://localhost:5001/nori-api-24aca/us-central1/app for local Function app
+[debug] [2020-03-30T09:31:39.436Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-03-30T09:31:39.437Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-03-30T09:31:39.440Z] Accepted request GET /nori-api-24aca/us-central1/app/api --> app
+[debug] [2020-03-30T09:31:39.449Z] [worker-pool] submitWork(triggerId=app)
+[debug] [2020-03-30T09:31:39.451Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: Assigning socketPath: \\?\pipe\C:\node\test-firebase-three\functions\1420
+[debug] [2020-03-30T09:31:39.453Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: BUSY
+[debug] [2020-03-30T09:31:39.478Z] [runtime-status] [1420] Trigger "app" has been found, beginning invocation!
+[info] i  functions: Beginning execution of "app"
+[debug] [2020-03-30T09:31:39.490Z] [runtime-status] [1420] triggerDefinition {"httpsTrigger":{},"name":"app","entryPoint":"app"}
+[debug] [2020-03-30T09:31:39.490Z] [runtime-status] [1420] Running app in mode HTTPS
+[debug] [2020-03-30T09:31:39.513Z] [runtime-status] [1420] Attempting to listen to socketPath: \\?\pipe\C:\node\test-firebase-three\functions\1420
+[debug] [2020-03-30T09:31:39.546Z] [functions] Runtime ready! Sending request!
+[debug] [2020-03-30T09:31:39.584Z] [runtime-status] [1420] Ephemeral server handling GET request
+[debug] [2020-03-30T09:31:39.609Z] [runtime-status] [1420] Ephemeral server survived.
+[info] i  functions: Finished "app" in ~1s
+[debug] [2020-03-30T09:31:39.626Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: IDLE
+[debug] [2020-03-30T09:31:39.626Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2020-03-30T09:32:17.413Z] File C:\node\test-firebase-three\functions\index.js changed, reloading triggers
+[debug] [2020-03-30T09:32:18.434Z] [worker-pool] Shutting down IDLE worker (~diagnostic~)
+[debug] [2020-03-30T09:32:18.435Z] [worker-~diagnostic~-2b25be87-1e76-46ae-9ccd-60296cf058f1]: FINISHING
+[debug] [2020-03-30T09:32:18.439Z] [worker-pool] Shutting down IDLE worker (app)
+[debug] [2020-03-30T09:32:18.439Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: FINISHING
+[debug] [2020-03-30T09:32:18.552Z] [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-03-30T09:32:18.552Z] [worker-pool] Adding worker with key ~diagnostic~, total=2
+[debug] [2020-03-30T09:32:18.552Z] [worker-pool] submitWork(triggerId=)
+[debug] [2020-03-30T09:32:18.553Z] [worker-~diagnostic~-6b121225-1dcc-4a63-8a35-acc25f964f3e]: Assigning socketPath: \\?\pipe\C:\node\test-firebase-three\functions\20416
+[debug] [2020-03-30T09:32:18.553Z] [worker-~diagnostic~-6b121225-1dcc-4a63-8a35-acc25f964f3e]: BUSY
+[debug] [2020-03-30T09:32:18.557Z] [worker-~diagnostic~-2b25be87-1e76-46ae-9ccd-60296cf058f1]: exited
+[debug] [2020-03-30T09:32:18.557Z] [worker-~diagnostic~-2b25be87-1e76-46ae-9ccd-60296cf058f1]: FINISHED
+[debug] [2020-03-30T09:32:18.557Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: exited
+[debug] [2020-03-30T09:32:18.557Z] [worker-app-f3edbffc-4609-4285-9567-a366dd54a7c7]: FINISHED
+[debug] [2020-03-30T09:32:19.446Z] [runtime-status] [20416] Functions runtime initialized. {"cwd":"C:\\node\\test-firebase-three\\functions","node_version":"12.16.1"}
+[debug] [2020-03-30T09:32:19.447Z] [runtime-status] [20416] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true,"pubsub_emulator":true}
+[debug] [2020-03-30T09:32:19.454Z] [runtime-status] [20416] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2020-03-30T09:32:19.457Z] [runtime-status] [20416] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T09:32:19.459Z] [runtime-status] [20416] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[warn] !  ReferenceError: geraisRouter is not defined
+    at Object.<anonymous> (C:\node\test-firebase-three\functions\index.js:13:24)
+    at Module._compile (internal/modules/cjs/loader.js:1158:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1178:10)
+    at Module.load (internal/modules/cjs/loader.js:1002:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:901:14)
+    at Module.require (internal/modules/cjs/loader.js:1044:19)
+    at require (internal/modules/cjs/helpers.js:77:18)
+    at C:\Users\Cykatoro\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:761:33
+    at Generator.next (<anonymous>)
+    at fulfilled (C:\Users\Cykatoro\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\functionsEmulatorRuntime.js:5:58)
+[warn] !  We were unable to load your functions code. (see above)
+[debug] [2020-03-30T09:32:20.070Z] [worker-~diagnostic~-6b121225-1dcc-4a63-8a35-acc25f964f3e]: exited
+[debug] [2020-03-30T09:32:20.070Z] [worker-~diagnostic~-6b121225-1dcc-4a63-8a35-acc25f964f3e]: FINISHED
+[debug] [2020-03-30T09:32:36.680Z] File C:\node\test-firebase-three\functions\index.js changed, reloading triggers
+[debug] [2020-03-30T09:32:37.682Z] [worker-pool] Cleaned up workers for ~diagnostic~: 2 --> 0
+[debug] [2020-03-30T09:32:37.683Z] [worker-pool] Cleaned up workers for app: 1 --> 0
+[debug] [2020-03-30T09:32:37.705Z] [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-03-30T09:32:37.705Z] [worker-pool] Adding worker with key ~diagnostic~, total=1
+[debug] [2020-03-30T09:32:37.706Z] [worker-pool] submitWork(triggerId=)
+[debug] [2020-03-30T09:32:37.707Z] [worker-~diagnostic~-99c6ed8f-25a6-4187-bd33-788b69fa0629]: Assigning socketPath: \\?\pipe\C:\node\test-firebase-three\functions\19356
+[debug] [2020-03-30T09:32:37.708Z] [worker-~diagnostic~-99c6ed8f-25a6-4187-bd33-788b69fa0629]: BUSY
+[debug] [2020-03-30T09:32:38.319Z] [runtime-status] [19356] Functions runtime initialized. {"cwd":"C:\\node\\test-firebase-three\\functions","node_version":"12.16.1"}
+[debug] [2020-03-30T09:32:38.321Z] [runtime-status] [19356] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true,"pubsub_emulator":true}
+[debug] [2020-03-30T09:32:38.325Z] [runtime-status] [19356] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2020-03-30T09:32:38.327Z] [runtime-status] [19356] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T09:32:38.329Z] [runtime-status] [19356] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[warn] !  TypeError: Router.use() requires a middleware function but got a Object
+    at Function.use (C:\node\test-firebase-three\functions\node_modules\express\lib\router\index.js:458:13)
+    at Function.<anonymous> (C:\node\test-firebase-three\functions\node_modules\express\lib\application.js:220:21)
+    at Array.forEach (<anonymous>)
+    at Function.use (C:\node\test-firebase-three\functions\node_modules\express\lib\application.js:217:7)
+    at Object.<anonymous> (C:\node\test-firebase-three\functions\index.js:14:5)
+    at Module._compile (internal/modules/cjs/loader.js:1158:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1178:10)
+    at Module.load (internal/modules/cjs/loader.js:1002:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:901:14)
+    at Module.require (internal/modules/cjs/loader.js:1044:19)
+[warn] !  We were unable to load your functions code. (see above)
+[debug] [2020-03-30T09:32:38.715Z] [worker-~diagnostic~-99c6ed8f-25a6-4187-bd33-788b69fa0629]: exited
+[debug] [2020-03-30T09:32:38.715Z] [worker-~diagnostic~-99c6ed8f-25a6-4187-bd33-788b69fa0629]: FINISHED
+[debug] [2020-03-30T09:32:59.044Z] File C:\node\test-firebase-three\functions\routes\gerais.js changed, reloading triggers
+[debug] [2020-03-30T09:33:00.045Z] [worker-pool] Cleaned up workers for ~diagnostic~: 1 --> 0
+[debug] [2020-03-30T09:33:00.051Z] [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-03-30T09:33:00.051Z] [worker-pool] Adding worker with key ~diagnostic~, total=1
+[debug] [2020-03-30T09:33:00.051Z] [worker-pool] submitWork(triggerId=)
+[debug] [2020-03-30T09:33:00.051Z] [worker-~diagnostic~-4801bd79-1693-40d1-97c3-31e34738feac]: Assigning socketPath: \\?\pipe\C:\node\test-firebase-three\functions\5492
+[debug] [2020-03-30T09:33:00.052Z] [worker-~diagnostic~-4801bd79-1693-40d1-97c3-31e34738feac]: BUSY
+[debug] [2020-03-30T09:33:00.575Z] [runtime-status] [5492] Functions runtime initialized. {"cwd":"C:\\node\\test-firebase-three\\functions","node_version":"12.16.1"}
+[debug] [2020-03-30T09:33:00.577Z] [runtime-status] [5492] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true,"pubsub_emulator":true}
+[debug] [2020-03-30T09:33:00.581Z] [runtime-status] [5492] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2020-03-30T09:33:00.584Z] [runtime-status] [5492] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T09:33:00.585Z] [runtime-status] [5492] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T09:33:00.911Z] [worker-~diagnostic~-4801bd79-1693-40d1-97c3-31e34738feac]: IDLE
+[debug] [2020-03-30T09:33:39.190Z] File C:\node\test-firebase-three\functions\routes\gerais.js changed, reloading triggers
+[debug] [2020-03-30T09:33:40.192Z] [worker-pool] Shutting down IDLE worker (~diagnostic~)
+[debug] [2020-03-30T09:33:40.193Z] [worker-~diagnostic~-4801bd79-1693-40d1-97c3-31e34738feac]: FINISHING
+[debug] [2020-03-30T09:33:40.221Z] [worker-pool] addWorker(~diagnostic~)
+[debug] [2020-03-30T09:33:40.222Z] [worker-pool] Adding worker with key ~diagnostic~, total=2
+[debug] [2020-03-30T09:33:40.223Z] [worker-pool] submitWork(triggerId=)
+[debug] [2020-03-30T09:33:40.224Z] [worker-~diagnostic~-47440835-ef43-486b-ba80-a9d1d7761523]: Assigning socketPath: \\?\pipe\C:\node\test-firebase-three\functions\8180
+[debug] [2020-03-30T09:33:40.225Z] [worker-~diagnostic~-47440835-ef43-486b-ba80-a9d1d7761523]: BUSY
+[debug] [2020-03-30T09:33:40.232Z] [worker-~diagnostic~-4801bd79-1693-40d1-97c3-31e34738feac]: exited
+[debug] [2020-03-30T09:33:40.232Z] [worker-~diagnostic~-4801bd79-1693-40d1-97c3-31e34738feac]: FINISHED
+[debug] [2020-03-30T09:33:40.843Z] [runtime-status] [8180] Functions runtime initialized. {"cwd":"C:\\node\\test-firebase-three\\functions","node_version":"12.16.1"}
+[debug] [2020-03-30T09:33:40.844Z] [runtime-status] [8180] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true,"pubsub_emulator":true}
+[debug] [2020-03-30T09:33:40.849Z] [runtime-status] [8180] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2020-03-30T09:33:40.851Z] [runtime-status] [8180] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T09:33:40.853Z] [runtime-status] [8180] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T09:33:41.173Z] [worker-~diagnostic~-47440835-ef43-486b-ba80-a9d1d7761523]: IDLE
+[info] [hosting] Rewriting /api to http://localhost:5001/nori-api-24aca/us-central1/app for local Function app
+[debug] [2020-03-30T09:39:13.626Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2020-03-30T09:39:13.627Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2020-03-30T09:39:13.627Z] Accepted request GET /nori-api-24aca/us-central1/app/api --> app
+[debug] [2020-03-30T09:39:13.627Z] [worker-pool] Cleaned up workers for ~diagnostic~: 2 --> 1
+[debug] [2020-03-30T09:39:13.635Z] [worker-pool] addWorker(app)
+[debug] [2020-03-30T09:39:13.636Z] [worker-pool] Adding worker with key app, total=1
+[debug] [2020-03-30T09:39:13.636Z] [worker-pool] submitWork(triggerId=app)
+[debug] [2020-03-30T09:39:13.636Z] [worker-app-4fdad78f-6a05-4056-b35f-db7ef2f38553]: Assigning socketPath: \\?\pipe\C:\node\test-firebase-three\functions\104
+[debug] [2020-03-30T09:39:13.636Z] [worker-app-4fdad78f-6a05-4056-b35f-db7ef2f38553]: BUSY
+[debug] [2020-03-30T09:39:14.300Z] [runtime-status] [104] Functions runtime initialized. {"cwd":"C:\\node\\test-firebase-three\\functions","node_version":"12.16.1"}
+[debug] [2020-03-30T09:39:14.302Z] [runtime-status] [104] Disabled runtime features: {"functions_config_helper":true,"network_filtering":true,"timeout":true,"memory_limiting":true,"admin_stubs":true,"pubsub_emulator":true}
+[debug] [2020-03-30T09:39:14.307Z] [runtime-status] [104] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.10.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-admin\\lib\\index.js"}
+[debug] [2020-03-30T09:39:14.312Z] [runtime-status] [104] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T09:39:14.314Z] [runtime-status] [104] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.5.0","resolution":"C:\\node\\test-firebase-three\\functions\\node_modules\\firebase-functions\\lib\\index.js"}
+[debug] [2020-03-30T09:39:14.764Z] [runtime-status] [104] Trigger "app" has been found, beginning invocation!
+[info] i  functions: Beginning execution of "app"
+[debug] [2020-03-30T09:39:14.766Z] [runtime-status] [104] triggerDefinition {"httpsTrigger":{},"name":"app","entryPoint":"app"}
+[debug] [2020-03-30T09:39:14.766Z] [runtime-status] [104] Running app in mode HTTPS
+[debug] [2020-03-30T09:39:14.771Z] [runtime-status] [104] Attempting to listen to socketPath: \\?\pipe\C:\node\test-firebase-three\functions\104
+[debug] [2020-03-30T09:39:14.776Z] [functions] Runtime ready! Sending request!
+[debug] [2020-03-30T09:39:14.796Z] [runtime-status] [104] Ephemeral server handling GET request
+[debug] [2020-03-30T09:39:14.807Z] [runtime-status] [104] Ephemeral server survived.
+[info] i  functions: Finished "app" in ~1s
+[debug] [2020-03-30T09:39:14.816Z] [worker-app-4fdad78f-6a05-4056-b35f-db7ef2f38553]: IDLE
+[debug] [2020-03-30T09:39:14.816Z] [work-queue] {"queueLength":0,"workRunningCount":0}
