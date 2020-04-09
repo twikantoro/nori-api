@@ -8,19 +8,12 @@ router.get('/', function(req, res, next) {
 });
 router.get('/create', async function(req, res, next) {
   token = req.query.token 
-  email = req.query.email
-  password = req.query.password
-
-  try {
-    const result = await admin.auth().createUser({
-      email: email,
-      password: password
-    })
-    //console.log(result)
-    res.send(result)
-  } catch (error) {
-    res.send(error)
-  }
+  admin.auth().verifyIdToken(token).then((result) => {
+    var uid = result.uid
+    var doc = {
+      nama: req.query.nama
+    }
+  })
 });
 
 module.exports = router;
