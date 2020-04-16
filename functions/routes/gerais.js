@@ -83,6 +83,27 @@ router.get('/deletebykode', async function (req, res, next) {
     res.send(e)
   })
 })
+async function insertLayananToTheseGerais(gerais) {
+  for (const gerai of gerais) {
+    var layanans = await db.collection('layanans').where('id_gerai', '==', gerai.id).get().then(snapshot => {
+      if (snapshot.empty) {
+        return false
+      }
+      var i = 0
+      var data = []
+      snapshot.forEach(doc => {
+        data[i] = doc.data()
+        data[i].id = doc.id
+        i++
+      })
+      return data
+    })
+    if (layanans!==false) {
+      gerai.layanans = data
+    }
+  }
+  return gerais
+}
 router.get('/get_all', async function (req, res, next) {
   var token = req.query.token
   var id_pemilik = req.query.id_pemilik
@@ -93,7 +114,7 @@ router.get('/get_all', async function (req, res, next) {
     res.send("token invalid")
     return null
   })
-  db.collection('gerai').where('id_pemilik', '==', id_pemilik).get().then(snapshot => {
+  var gerais = await db.collection('gerai').where('id_pemilik', '==', id_pemilik).get().then(snapshot => {
     if (snapshot.empty) {
       res.send(null)
       return null
@@ -105,8 +126,10 @@ router.get('/get_all', async function (req, res, next) {
       data[i].id = doc.id
       i++
     })
-    res.send(data)
+    return data
   })
+  var newGerais = await insertLayananToTheseGerais(gerais)
+  res.send(newGerais)
 })
 router.get('/mine/list', async function (req, res, next) {
   //step1: verifying token
