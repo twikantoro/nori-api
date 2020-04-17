@@ -5,7 +5,7 @@ var db = admin.firestore()
 
 router.get('/getAllByKode', async function (req, res, next) {
   //step1: get id
-  var id_gerai = db.collection('gerai').where('kode', '==', req.query.kode).get().then(docs=>{
+  var id_gerai = await db.collection('gerai').where('kode', '==', req.query.kode).get().then(docs=>{
     if(docs.empty) return false
     docs.forEach(doc => {
       return doc.id
@@ -13,7 +13,7 @@ router.get('/getAllByKode', async function (req, res, next) {
   })
   if (!id_gerai) {res.send(false); return 0}
   //step2: get layanans
-  var layanans = db.collection('layanan').where('id_gerai', '==', id_gerai).get().then(docs=>{
+  var layanans = await db.collection('layanan').where('id_gerai', '==', id_gerai).get().then(docs=>{
     if(docs.empty) return false
     var data
     var i = 0
