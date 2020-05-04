@@ -44,24 +44,27 @@ router.get('/create', async function (req, res, next) {
   })
 });
 
-async function amITheOwner(data) {
-  //step1: verifying token
-  var step1 = await admin.auth().verifyIdToken(data.token).then(result => {
-    return true
-  }).catch(e => {
-    return false
-  })
-  if (!step1) return false
-  //step2: verifying hak milik
-  var step2 = await db.collection('gerai').where('id_pemilik', '==', data.id_pemilik).get().then(result => {
-    if (result.empty) return false
-    var match = false
-    result.forEach(row => {
-      if (row.kode == query.kode) match = true
+async function amITheOwner(query) {
+  return new Promise(async function (resolve, reject) {
+    //step1 verify token
+    var step1 = await admin.auth().verifyIdToken(query.token).then(result => {
+      return true
+    }).catch(e => {
+      return false
     })
-    return match ? true : false
-  }).catch(e => {
-    return false
+    if (!step1) {
+      console.log("token invalid")
+      return
+    }
+    //step2 verify owniership
+    var step2 = await db.collection('gerai').where('id_pemilik', '==', query.id_pemilik).get().then(response => {
+      if (response.empty) {
+        return false
+      } else {
+        return true
+      }
+    })
+    resolve(step2)
   })
 }
 
@@ -98,7 +101,7 @@ async function insertLayananToTheseGerais(gerais) {
       })
       return data
     })
-    if (layanans!==false) {
+    if (layanans !== false) {
       gerai.layanans = data
     }
   }
@@ -164,6 +167,34 @@ router.get('/mine/list', async function (req, res, next) {
     res.send(false)
   } else {
     res.send(step2)
+  }
+})
+
+//edit gerai
+router.get('/edit', async function (req, res, next) {
+  //the update data
+  var data = {
+    nama: req.query.nama,
+    kode: req.query.kode,
+    deskripsi: req.query.deskripsi,
+    alamat: req.query.alamat,
+    wilayah: req.query.wilayah
+  }
+  //step1: verify ownership
+  var step1 = await amITheOwner(req.query)
+  if (!step1) {
+    res.send("bukan milikmu"); return
+  }
+  //step2: edit!
+  var step2 = await db.collection('gerai').doc(req.query.id_gerai).update(data).then(response => {
+    return "berhasil"
+  }).catch(e => {
+    return e
+  })
+  if (step2 !== 'berhasil') {
+    res.send(step2)
+  } else {
+    res.send("berhasil")
   }
 })
 

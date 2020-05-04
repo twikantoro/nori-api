@@ -100,18 +100,20 @@ router.get('/getAllBelongings', async function (req, res, next) {
       i++
     })
     return gerais
+  }).catch(e=>{
+    return e
   })
   if (!step2) {
     res.send("no gerais"); return
   } else {
     //step3 = get klasters by gerais
     var step3 = await getKlastersByGerais(step2)
-    if (!step3) {
+    if (step3.length===0) {
       res.send({ gerais: step2 }); return //has no klaster
     } else {
       //step4 = if (klasters) then get layanans
       var step4 = await getLayanansByKlasters(step3)
-      if (!step4) {
+      if (step4.length===0) {
         res.send({ gerais: step2, klasters: step3 }); return //has no layanan
       } else {
         res.send({ gerais: step2, klasters: step3, layanans: step4 })
