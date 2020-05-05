@@ -142,4 +142,49 @@ router.get('/getAllByKode', async function (req, res, next) {
   }
 })
 
+router.get('/edit', async function (req, res, next) {
+  //step1: verify ownership
+  var step1 = await amITheOwner(req.query)
+  if (!step1) {
+    res.send("you're not the owner"); return
+  }
+  //step2: edit!
+  var data = {
+    nama: req.query.nama,
+    jadwal: req.query.jadwal
+  }
+  var step2 = await db.collection('klaster').doc(req.query.id_klaster).update(data).then(response => {
+    return "sukses"
+  }).catch(e => {
+    return e
+  })
+  res.send(step2)
+})
+
+router.get('/hapus', async function (req, res, next) {
+  //step1: verify ownership
+  var step1 = await amITheOwner(req.query)
+  if (!step1) {
+    res.send("ur not da owner"); return
+  }
+  //step2: hapus layanans
+  var step2 = await db.collection('layanan').where('id_klaster', '==', req.query.id_klaster).get().then(response => {
+    if (response.empty) return false
+    try {
+      response.forEach(layanan => {
+        db.collection('layanan').doc(layanan.id).delete()
+      })
+    } catch (error) {
+      //nothing HAHA
+    }
+  })
+  //step3: hapus gerai // parallel
+  var step3 = await db.collection('klaster').doc(req.query.id_klaster).delete().then(response => {
+    return "sukses"
+  }).catch(e => {
+    return e
+  })
+  res.send(step3)
+})
+
 module.exports = router;

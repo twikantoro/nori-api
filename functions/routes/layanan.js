@@ -16,11 +16,12 @@ router.get('/create', async function (req, res, next) {
     kode: req.query.kode,
     deskripsi: req.query.deskripsi,
     syarat: req.query.syarat,
-    durasi: req.query.durasi
+    durasi: req.query.durasi,
+    aktif: true
   }
   db.collection('layanan').doc().set(data).then(response => {
     res.send("sukses")
-  }).catch(e=>{
+  }).catch(e => {
     res.send(e)
   })
 })
@@ -48,5 +49,79 @@ async function amITheOwner(query) {
     resolve(step2)
   })
 }
+
+router.get('/hapus', async function (req, res, next) {
+  //step1: verify ownership
+  var step1 = await amITheOwner(req.query)
+  if (!step1) {
+    res.send("bukan milikmu"); return
+  }
+  //step2: hapus
+  var step2 = await db.collection('layanan').doc(req.query.id_layanan).delete().then(response => {
+    return "sukses"
+  }).catch(e => {
+    return e
+  })
+  res.send(step2)
+})
+
+router.get('/edit', async function (req, res, next) {
+  //step1: verify ownership
+  var step1 = await amITheOwner(req.query)
+  if (!step1) {
+    res.send("bukan milikmu"); return
+  }
+  //step2: edit
+  var data = {
+    id_klaster: req.query.id_klaster,
+    nama: req.query.nama,
+    kode: req.query.kode,
+    deskripsi: req.query.deskripsi,
+    syarat: req.query.syarat,
+    durasi: req.query.durasi
+  }
+  var step2 = await db.collection('layanan').doc(req.query.id_layanan).update(data).then(response => {
+    return "sukses"
+  }).catch(e=>{
+    return e
+  })
+  res.send(step2)
+})
+
+router.get('/deaktivasi', async function (req, res, next) {
+  //step1: verify ownership
+  var step1 = await amITheOwner(req.query)
+  if (!step1) {
+    res.send("bukan milikmu"); return
+  }
+  //step2: deaktivasi
+  var data = {
+    aktif: false
+  }
+  var step2 = await db.collection('layanan').doc(req.query.id_layanan).update(data).then(response=>{
+    return "sukses"
+  }).catch(e=>{
+    return e
+  })
+  res.send(step2)
+})
+
+router.get('/aktivasi', async function (req, res, next) {
+  //step1: verify ownership
+  var step1 = await amITheOwner(req.query)
+  if (!step1) {
+    res.send("bukan milikmu"); return
+  }
+  //step2: deaktivasi
+  var data = {
+    aktif: true
+  }
+  var step2 = await db.collection('layanan').doc(req.query.id_layanan).update(data).then(response=>{
+    return "sukses"
+  }).catch(e=>{
+    return e
+  })
+  res.send(step2)
+})
 
 module.exports = router;
