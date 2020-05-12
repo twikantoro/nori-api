@@ -206,6 +206,9 @@ router.get('/searchGeraiOrLayanan', async function (req, res, next) {
 
 async function getKlastersByGerais(gerais) {
   return new Promise(resolve => {
+    if (gerais.length < 1) {
+      resolve([])
+    }
     var klasters = new Array(0)
     for (let i = 0; i < gerais.length; i++) {
       db.collection('klaster').where('id_gerai', '==', gerais[i].id).get().then(response => {
@@ -233,6 +236,9 @@ async function getKlastersByGerais(gerais) {
 
 async function getLayanansByKlasters(klasters) {
   return new Promise(resolve => {
+    if (klasters.length < 1) {
+      resolve([])
+    }
     var layanans = new Array(0)
     for (let i = 0; i < klasters.length; i++) {
       db.collection('layanan').where('id_klaster', '==', klasters[i].id).get().then(response => {
@@ -422,8 +428,50 @@ router.get('/searchRefined', async function (req, res, next) {
   var uniq = [...new Set(step4)]
   //step5: get array of gerais by geraiIDs
   var step5 = await getGeraisByGeraiIDs(uniq)
-  res.send(step5)
+  //step6: get klasters by gerais
+  var step6 = await getKlastersByGerais(step5)
+  //step7: get layanans by klasters
+  var step7 = await getLayanansByKlasters(step6)
+  //step8: get combined result of gerais consisting of layanans
+  var step8 = await combineForSearchResult(step5, step6, step7)
+
+  //res.send({ step5: step5, step6: step6, step7: step7 })
+  res.send(step8)
 })
+
+async function combineForSearchResult(gerais, klasters, layanans) {
+  return new Promise(async function (resolve, reject) {
+    var newGerais = new Array(0)
+    gerais.forEach(gerai => {
+      //get klasters whitelist
+      var klasterIDs = new Array(0)
+      klasters.forEach(klaster => {
+        if (gerai.id === klaster.id_gerai) {
+          klasterIDs = klasterIDs.concat(klaster.id)
+        }
+      })
+      //klaster kosong?
+      var foundLayanans = new Array(0)
+      if (klasterIDs.length === 0) {
+
+      } else {
+        //get the layanans
+        klasterIDs.forEach(klasterID => {
+          layanans.forEach(layanan => {
+            if (klasterID === layanan.id_klaster) {
+              foundLayanans = layanans.concat(layanan)
+            }
+          })
+        })
+      }
+      var foundLayanansUnique = [...new Set(foundLayanans)]
+      var newGerai = gerai
+      newGerai.layanans = foundLayanansUnique
+      newGerais = newGerais.concat(newGerai)
+    })
+    resolve(gerais)
+  })
+}
 
 async function getKeywordsBySearchText(searchText) {
   return new Promise(async function (resolve, reject) {
@@ -501,7 +549,9 @@ async function getKlasterIDsByKeywordsOfLayanans(keywords) {
     var klasterIDs = new Array(0)
     for (let i = 0; i < uniq.length; i++) {
       db.collection('layanan').doc(uniq[i]).get().then(response => {
-        klasterIDs = klasterIDs.concat(response.data().id_klaster)
+        if (!response.empty) {
+          klasterIDs = klasterIDs.concat(response.data().id_klaster)
+        }
         if (i === uniq.length - 1) {
           var uniqTwo = [...new Set(klasterIDs)]
           resolve(uniqTwo)
