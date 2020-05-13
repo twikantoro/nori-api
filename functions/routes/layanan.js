@@ -433,25 +433,57 @@ router.get('/searchRefined', async function (req, res, next) {
   //step7: get layanans by klasters
   var step7 = await getLayanansByKlasters(step6)
   //step8: get combined result of gerais consisting of layanans
+  //res.send({ step5: step5, step6: step6, step7: step7 })
   var step8 = await combineForSearchResult(step5, step6, step7)
 
-  //res.send({ step5: step5, step6: step6, step7: step7 })
   res.send(step8)
 })
 
 async function combineForSearchResult(gerais, klasters, layanans) {
   return new Promise(async function (resolve, reject) {
+    var newGerais = []
+    var newGerai = {}
+    var klasterIDs = []
+    var newLayananans = []
+    gerais.forEach(gerai => {
+      newGerai = { ...gerai }
+      klasterIDs = []
+      klasters.forEach(klaster => {
+        if (klaster.id_gerai === gerai.id) {
+          klasterIDs = klasterIDs.concat(klaster.id)
+        }
+      })
+      // no klaster?
+      newLayananans = []
+      if (klasterIDs.length > 0) {
+        layanans.forEach(layanan => {
+          if (klasterIDs.includes(layanan.id_klaster)) {
+            newLayananans = newLayananans.concat(layanan)
+          }
+        })
+      }
+      newGerai.layanans = newLayananans
+      newGerais = newGerais.concat(newGerai)
+    })
+    resolve(newGerais)
+  })
+}
+
+async function combineForSearchResultOld(gerais, klasters, layanans) {
+  return new Promise(async function (resolve, reject) {
     var newGerais = new Array(0)
+    var klasterIDs = new Array(0)
+    var foundLayanans = new Array(0)
     gerais.forEach(gerai => {
       //get klasters whitelist
-      var klasterIDs = new Array(0)
+      klasterIDs = []
       klasters.forEach(klaster => {
         if (gerai.id === klaster.id_gerai) {
           klasterIDs = klasterIDs.concat(klaster.id)
         }
       })
       //klaster kosong?
-      var foundLayanans = new Array(0)
+      foundLayanans = []
       if (klasterIDs.length === 0) {
 
       } else {
@@ -469,7 +501,7 @@ async function combineForSearchResult(gerais, klasters, layanans) {
       newGerai.layanans = foundLayanansUnique
       newGerais = newGerais.concat(newGerai)
     })
-    resolve(gerais)
+    resolve(newGerais)
   })
 }
 

@@ -61,48 +61,12 @@ router.get('/deleteInvalid', async function (req, res, next) {
 //   })
 // })
 
-router.get('/createAll', async function (req, res, next) {
-  db.collection('gerai').get().then(gerais => {
-    gerais.forEach(gerai => {
+// router.get('/createAll', async function (req, res, next) {
+//   db.collection('gerai').get().then(gerais => {
+//     gerais.forEach(gerai => {
 
-    })
-  })
-})
-
-router.get('/makeKeywordOfGerais', async function (req, res, next) {
-  var gerais = await db.collection('gerai').get().then(response => {
-    response.forEach(gerai => {
-      var currGerai = gerai.data()
-      var keywords = new Array(0)
-      var keywordsFromNama = currGerai.nama.toLowerCase().split(" ")
-      keywords = keywords.concat(keywordsFromNama).concat(currGerai.kode)
-      var data = {
-        keywords: keywords
-      }
-      db.collection('gerai').doc(gerai.id).update(data).then({
-        //nothing
-      })
-    })
-  })
-  res.send("ok")
-})
-
-router.get('/makeKeywordOfLayanans', async function (req, res, next) {
-  var gerais = await db.collection('layanan').get().then(response => {
-    response.forEach(gerai => {
-      var currGerai = gerai.data()
-      var keywords = new Array(0)
-      var keywordsFromNama = currGerai.nama.toLowerCase().split(" ")
-      keywords = keywords.concat(keywordsFromNama).concat(currGerai.kode)
-      var data = {
-        keywords: keywords
-      }
-      db.collection('layanan').doc(gerai.id).update(data).then({
-        //nothing
-      })
-    })
-  })
-  res.send("ok")
-})
+//     })
+//   })
+// })
 
 module.exports = router
