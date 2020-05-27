@@ -16,7 +16,6 @@ router.get('/create', async function (req, res, next) {
     kode: req.query.kode,
     deskripsi: req.query.deskripsi,
     syarat: req.query.syarat,
-    durasi: req.query.durasi,
     aktif: true
   }
   db.collection('layanan').doc().set(data).then(response => {
@@ -78,7 +77,6 @@ router.get('/edit', async function (req, res, next) {
     kode: req.query.kode,
     deskripsi: req.query.deskripsi,
     syarat: req.query.syarat,
-    durasi: req.query.durasi
   }
   var step2 = await db.collection('layanan').doc(req.query.id_layanan).update(data).then(response => {
     return "sukses"

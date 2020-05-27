@@ -339,5 +339,11 @@ async function combineForGetResult(gerais, klasters, layanans) {
   })
 }
 
+router.get('/:geraiKode/:layananKode', async function (req, res, next) {
+  var geraiKode = req.params.geraiKode
+  var layananKode = req.params.layananKode
+  res.send(geraiKode+layananKode)
+})
+
 module.exports = router;
 

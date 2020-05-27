@@ -13,6 +13,20 @@ const pesananRouter = require('./routes/pesanan')
 var cors = require('cors')
 
 var app = express()
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+io.on('connection', () => {
+  io.emit('hello', 'can you hear me')
+  //console.log(io.sockets)
+});
+
+try {
+  //server.listen(3030);
+} catch (error) {
+  //nothing
+}
+
+
 app.use(cors())
 app.use('/api', indexRouter)
 app.use('/api/gerai', geraisRouter)
