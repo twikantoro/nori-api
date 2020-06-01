@@ -15,10 +15,12 @@
     "express": "^4.17.1",
     "firebase-admin": "^8.6.0",
     "firebase-functions": "^3.3.0",
-    "http-errors": "^1.7.3"
+    "http-errors": "^1.7.3",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "firebase-functions-test": "^0.1.6"
+    "firebase-functions-test": "^0.1.6",
+    "nodemon": "^2.0.4"
   },
   "private": true
 }

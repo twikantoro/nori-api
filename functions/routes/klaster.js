@@ -88,8 +88,9 @@ router.get('/create', async function (req, res, next) {
     id_gerai: step2,
     nama: req.query.nama,
     jadwal: req.query.jadwal,
-    kode: req.query.kode,
-    durasi: req.query.kode
+    //    kode: req.query.kode,
+    durasi: req.query.kode,
+    prefix: req.query.prefix
   }
   var step3 = await db.collection('klaster').doc().set(params).then(response => {
     res.send("sukses")
@@ -152,7 +153,9 @@ router.get('/edit', async function (req, res, next) {
   //step2: edit!
   var data = {
     nama: req.query.nama,
-    jadwal: req.query.jadwal
+    jadwal: req.query.jadwal,
+    durasi: req.query.durasi,
+    prefix: req.query.prefix
   }
   var step2 = await db.collection('klaster').doc(req.query.id_klaster).update(data).then(response => {
     return "sukses"

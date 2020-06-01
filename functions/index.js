@@ -20,12 +20,30 @@ io.on('connection', () => {
   //console.log(io.sockets)
 });
 
-try {
-  //server.listen(3030);
-} catch (error) {
-  //nothing
-}
+//server.listen(3030)
 
+// var admin = require('../config/firebaseAdminConfig')
+// var db = admin.firestore()
+// async function initiateSocket() {
+//   var portnumber = await db.collection('config').get().then(response => {
+//     if (response.empty) return 3000
+//     var biggest = 3000
+//     response.forEach(doc => {
+//       var tempDoc = doc.data()
+//       if (parseInt(tempDoc.portnumber) > biggest) {
+//         biggest = tempDoc.portnumber
+//       }
+//     })
+//     return biggest + 1
+//   })
+
+//   var data = {
+//     portnumber: portnumber
+//   }
+//   db.collection('config').doc().set(data).then()
+
+//   server.listen(portnumber)
+// }
 
 app.use(cors())
 app.use('/api', indexRouter)

@@ -3,6 +3,8 @@ var router = express.Router();
 var admin = require('../config/firebaseAdminConfig')
 var db = admin.firestore()
 
+var pesanan = require('./pesanan')
+
 router.get('/create', async function (req, res, next) {
   //step1: verify ownership
   var step1 = await amITheOwner(req.query)
@@ -634,5 +636,150 @@ async function getGeraisByGeraiIDs(geraiIDs) {
     }
   })
 }
+
+router.get('/getLayananData', async function (req, res, next) {
+  var geraiKode = req.query.geraiKode
+  var layananKode = req.query.layananKode
+  //step1: get gerai
+  var gerai = await db.collection('gerai').where('kode', '==', geraiKode).get().then(response => {
+    var tempGerai = {}
+    response.forEach(doc => {
+      tempGerai = doc.data()
+      tempGerai.id = doc.id
+    })
+    return tempGerai
+  })
+  //step2: get klasters
+  var klasters = await getKlastersByGerais([gerai])
+  //step3: get layanans
+  var layanans = await getLayanansByKlasters(klasters)
+  //step4: find the layanan
+  var layanan = {}
+  layanans.forEach(tempLay => {
+    if (tempLay.kode === layananKode) {
+      layanan = tempLay
+    }
+  })
+
+  //step5: modify the data
+  let newKlaster = klasters[0]
+//  newKlaster.slotLimit = getSlotLimit(newKlaster)
+  layanan.klaster = newKlaster
+  let jadwal = JSON.parse(layanan.klaster.jadwal)
+  layanan.forSelect = getForSelect(jadwal)
+
+  res.send(layanan)
+})
+
+function getHariIni() {
+  var date = new Date()
+  var returned = date.getDay() - 1
+  return returned >= 0 ? returned : returned + 7
+}
+
+function getForSelect(jadwal) {
+  let hariIni = getHariIni()
+  let returned = new Array(0)
+  for (let i = 0; i < 8; i++) {
+    let date = new Date()
+    date.setDate(date.getDate() + i)
+    let year = date.getFullYear()
+    let month = date.getMonth() + 1
+    let newMonth = month < 10 ? "0".concat(month.toString()) : month.toString()
+    let day = date.getDate()
+    let newDay = day < 10 ? "0" + day : day
+    let hari = {
+      tanggal: year.toString() + newMonth + newDay,
+      display: getDateDisplay({
+        hari: hariIni + i % 7,
+        tanggal: day,
+        bulan: month - 1
+      }, jadwal)
+    }
+    returned[i] = hari
+  }
+  return returned
+}
+
+function getDateDisplay(data, jadwal) {
+  let day = ""
+  switch (data.hari) {
+    case 0:
+      day = "Senin"
+      break;
+    case 1:
+      day = "Selasa"
+      break;
+    case 2:
+      day = "Rabu"
+      break;
+    case 3:
+      day = "Kamis"
+      break;
+    case 4:
+      day = "Jumat"
+      break;
+    case 5:
+      day = "Sabtu"
+      break;
+    case 6:
+      day = "Minggu"
+      break;
+    default:
+      break;
+  }
+  let month = ''
+  switch (data.bulan) {
+    case 0:
+      month = "Januari"
+      break;
+    case 1:
+      month = "Februari"
+      break;
+    case 2:
+      month = "Maret"
+      break;
+    case 3:
+      month = "April"
+      break;
+    case 4:
+      month = "Mei"
+      break;
+    case 5:
+      month = "Juni"
+      break;
+    case 6:
+      month = "Juli"
+      break;
+    case 7:
+      month = "Agustus"
+      break;
+    case 8:
+      month = "September"
+      break;
+    case 9:
+      month = "Oktober"
+      break;
+    case 10:
+      month = "November"
+      break;
+    case 11:
+      month = "Desember"
+      break;
+    default:
+      break;
+  }
+  if (isTheDayLibur(data.hari, jadwal)) {
+    return "(" + day + " libur)"
+  } else {
+    return day + ", " + data.tanggal + " " + month
+  }
+}
+
+function isTheDayLibur(hariKode, jadwal) {
+  if (jadwal[hariKode] === '') return true
+  return false
+}
+
 
 module.exports = router;

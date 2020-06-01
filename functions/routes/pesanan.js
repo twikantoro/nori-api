@@ -46,7 +46,7 @@ function getValidSlot(reservs, durasi, klaster) {
   }
 }
 
-function getSlots(layanan, klaster, hari) {
+module.exports = function getSlots(layanan, klaster, hari) {
   var jadwalArr = JSON.parse(klaster.jadwal)
   var jadwalHari = jadwalArr[hari]
   var decodedJadwal = decodeJadwal(jadwalHari)
