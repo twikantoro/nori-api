@@ -3,41 +3,94 @@ var router = express.Router();
 var admin = require('../config/firebaseAdminConfig')
 var db = admin.firestore()
 
-router.get('/pesanCepat', async function (req, res, next) {
-  var id_klaster = req.query.klasterID
-  var id_layanan = req.query.layananID
-  var urutan = req.query.urutan
-  var tanggal = req.query.tanggal
-  //step1: verify if urutan is valid
-  //step1.1: get last urutan in this klaster
-  var lastReserved = await db.collection('pesanan')
-    .where('id_klaster', '==', id_klaster)
-    .where('tanggal', '==', tanggal)
-    .get().then(response => {
-      if (response.empty) {
-        return 0
-      } else {
-        var biggestUrutan = 1
-        response.forEach(pesanan => {
-          var pesananTemp = pesanan.data()
-          if (biggestUrutan < pesananTemp.urutan) {
-            biggestUrutan = pesananTemp.urutan
-          }
-        })
-        return biggestUrutan
-      }
-    })
-  //step2: make the reservation
+router.get('/pesan', async function (req, res, next) {
+  //step1: verifyIDtoken and pengantri ID
+  var verified = await amIpengantri(req.query)
+  if (!verified) {
+    res.send("autentikasi gagal"); return
+  }
+  //create pesanan
+  let date = new Date()
+  let waktu = date.getTime() / 1000
   var data = {
-    id_klaster: id_klaster,
-    id_layanan: id_layanan,
-    tanggal: tanggal,
-    urutan: urutan,
+    id_pengantri: req.query.id_pengantri,
+    id_klaster: req.query.id_klaster,
+    id_layanan: req.query.id_layanan,
+    tanggal: req.query.tanggal,
+    waktu_pesan: waktu,
+    prefix: req.query.prefix,
+    slot: req.query.slot
   }
   db.collection('pesanan').doc().set(data).then(response => {
-
+    res.send("sukses")
   })
 })
+
+async function amIpengantri(data) {
+  //get uid
+  var uid = await admin.auth().verifyIdToken(data.token).then(decodedToken => {
+    return decodedToken.uid
+  }).catch(e => {
+    return false
+  })
+  if (!uid) {
+    console.log("token invalid")
+    return false
+  }
+  //get id pengantri
+  var id_pengantri = await db.collection('pengantri').where('id_pengguna', '==', uid).get().then(snapshot => {
+    if (snapshot.empty) return false
+    let returned = ''
+    snapshot.forEach(doc => {
+      returned = doc.id
+    })
+    return returned
+  }).catch(e => {
+    return false
+  })
+  if (!id_pengantri) {
+    console.log("pengguna tdk ditemukan")
+    return false
+  }
+  //is id pengantri same as deocoded token uid?
+  return id_pengantri === data.id_pengantri ? true : false
+}
+
+// router.get('/pesanCepat', async function (req, res, next) {
+//   var id_klaster = req.query.klasterID
+//   var id_layanan = req.query.layananID
+//   var urutan = req.query.urutan
+//   var tanggal = req.query.tanggal
+//   //step1: verify if urutan is valid
+//   //step1.1: get last urutan in this klaster
+//   var lastReserved = await db.collection('pesanan')
+//     .where('id_klaster', '==', id_klaster)
+//     .where('tanggal', '==', tanggal)
+//     .get().then(response => {
+//       if (response.empty) {
+//         return 0
+//       } else {
+//         var biggestUrutan = 1
+//         response.forEach(pesanan => {
+//           var pesananTemp = pesanan.data()
+//           if (biggestUrutan < pesananTemp.urutan) {
+//             biggestUrutan = pesananTemp.urutan
+//           }
+//         })
+//         return biggestUrutan
+//       }
+//     })
+//   //step2: make the reservation
+//   var data = {
+//     id_klaster: id_klaster,
+//     id_layanan: id_layanan,
+//     tanggal: tanggal,
+//     urutan: urutan,
+//   }
+//   db.collection('pesanan').doc().set(data).then(response => {
+
+//   })
+// })
 
 function getValidSlot(reservs, durasi, klaster) {
   if (reservs.length < 1) {

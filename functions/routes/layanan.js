@@ -667,7 +667,7 @@ router.get('/getLayananData', async function (req, res, next) {
   layanan.klaster = newKlaster
   let jadwal = JSON.parse(layanan.klaster.jadwal)
   layanan.forSelect = getForSelect(jadwal)
-
+  
   res.send(layanan)
 })
 
@@ -691,7 +691,7 @@ function getForSelect(jadwal) {
     let hari = {
       tanggal: year.toString() + newMonth + newDay,
       display: getDateDisplay({
-        hari: hariIni + i % 7,
+        hari: (hariIni + i) % 7,
         tanggal: day,
         bulan: month - 1
       }, jadwal)
