@@ -191,4 +191,25 @@ router.get('/hapus', async function (req, res, next) {
   res.send(step3)
 })
 
+router.get('/getRelatedData', async function (req, res, next) {
+  //get klaster
+  var klaster = await db.collection('klaster').doc(req.query.id_klaster).get().then(response => {
+    return { ...response.data(), id: response.id }
+  })
+  //get gerai
+  var gerai = await db.collection('gerai').doc(klaster.id_gerai).get().then(doc => {
+    return { ...doc.data(), id: doc.id }
+  })
+  //get layanan
+  var layanan = await db.collection('layanan').doc(req.query.id_layanan).get().then(doc => {
+    return { ...doc.data(), id: doc.id }
+  })
+  var returned = {
+    ...klaster,
+    gerai: gerai,
+    layanan: layanan
+  }
+  res.send(returned)
+})
+
 module.exports = router;

@@ -16,7 +16,7 @@ router.get('/pesan', async function (req, res, next) {
     id_pengantri: req.query.id_pengantri,
     id_klaster: req.query.id_klaster,
     id_layanan: req.query.id_layanan,
-    tanggal: req.query.tanggal,
+    tanggal: parseInt(req.query.tanggal),
     waktu_pesan: waktu,
     prefix: req.query.prefix,
     slot: req.query.slot
