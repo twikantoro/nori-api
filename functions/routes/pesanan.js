@@ -16,13 +16,35 @@ router.get('/pesan', async function (req, res, next) {
     id_pengantri: req.query.id_pengantri,
     id_klaster: req.query.id_klaster,
     id_layanan: req.query.id_layanan,
-    tanggal: parseInt(req.query.tanggal),
+    tanggal: req.query.tanggal,
     waktu_pesan: waktu,
     prefix: req.query.prefix,
     slot: req.query.slot
   }
   db.collection('pesanan').doc().set(data).then(response => {
     res.send("sukses")
+  })
+})
+
+router.get('/batal', async function (req, res, next) {
+  //step1: verify
+  var verified = await amIpengantri(req.query)
+  if (!verified) {
+    res.send("autentikasi gagal"); return
+  }
+  //hapus pesanan
+  db.collection('pesanan').where('id_pengantri', '==', req.query.id_pengantri).where('tanggal', '==', req.query.tanggal).get().then(snapshot => {
+    let id = ''
+    snapshot.forEach(doc => {
+      id = doc.id
+    })
+    db.collection('pesanan').doc(id).delete().then(something => {
+      res.send("sukses")
+    }).catch(e=>{
+      res.send(e)
+    })
+  }).catch(e=>{
+    res.send(e)
   })
 })
 
@@ -147,5 +169,7 @@ function minutesToTime(minutes) {
   minute = minute < 10 ? "0" + minute : minute
   return hour + ":" + minute
 }
+
+
 
 module.exports = router

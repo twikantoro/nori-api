@@ -34,7 +34,8 @@ router.get('/create', async function (req, res, next) {
     kode: req.query.kode,
     alamat: req.query.alamat,
     deskripsi: req.query.deskripsi,
-    wilayah: req.query.wilayah
+    wilayah: req.query.wilayah,
+    tautan: req.query.tautan
   }
   console.log("data", data)
   var id_gerai = db.collection('gerai').doc().set(data).then(response => {
@@ -178,7 +179,8 @@ router.get('/edit', async function (req, res, next) {
     kode: req.query.kode,
     deskripsi: req.query.deskripsi,
     alamat: req.query.alamat,
-    wilayah: req.query.wilayah
+    wilayah: req.query.wilayah,
+    tautan: req.query.tautan
   }
   //step1: verify ownership
   var step1 = await amITheOwner(req.query)
