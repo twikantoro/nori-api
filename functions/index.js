@@ -11,6 +11,7 @@ const layananRouter = require('./routes/layanan')
 const keywordRouter = require('./routes/keyword')
 const pesananRouter = require('./routes/pesanan')
 const pengantriRouter = require('./routes/pengantri')
+const stafRouter = require('./routes/staf')
 var cors = require('cors')
 
 var app = express()
@@ -56,11 +57,12 @@ app.use('/api/layanan', layananRouter)
 app.use('/api/keyword', keywordRouter)
 app.use('/api/pesanan', pesananRouter)
 app.use('/api/pengantri', pengantriRouter)
+app.use('/api/staf', stafRouter)
 //app.use('/api/staf', stafRouter)
 app.use(cors())
 
 app.get('/api', (request, response) => {
-  response.send('WHAT THE FUCK')
+  response.send('WHAT THE F')
 })
 
 exports.app = functions.https.onRequest(app)

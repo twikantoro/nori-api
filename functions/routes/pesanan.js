@@ -40,11 +40,65 @@ router.get('/batal', async function (req, res, next) {
     })
     db.collection('pesanan').doc(id).delete().then(something => {
       res.send("sukses")
-    }).catch(e=>{
+    }).catch(e => {
       res.send(e)
     })
-  }).catch(e=>{
+  }).catch(e => {
     res.send(e)
+  })
+})
+
+router.get('/bukaKlaster', async function (req, res, next) {
+  //verifytoken
+  var uid = await admin.auth().verifyIdToken(req.query.token).then(decodedToken => {
+    return decodedToken.uid
+  }).catch(e => {
+    return false
+  })
+  if (!uid) { res.send("token invalid"); return }
+  //buka klaster
+  var data = {
+    id_klaster: req.query.id_klaster,
+    slot: 0,
+    status: 1,
+    tanggal: req.query.tanggal
+  }
+  db.collection('pesanan').doc().set(data).then(wr => {
+    res.send("sukses")
+  })
+})
+
+router.get('/selesai', async function (req, res, next) {
+  //verifytoken
+  var uid = await admin.auth().verifyIdToken(req.query.token).then(decodedToken => {
+    return decodedToken.uid
+  }).catch(e => {
+    return false
+  })
+  if (!uid) { res.send("token invalid"); return }
+  //change status
+  var data = {
+    status: 1
+  }
+  db.collection('pesanan').doc(req.query.id_pesanan).update(data).then(wr => {
+    res.send("sukses")
+  })
+})
+
+router.get('/tidakHadir', async function (req, res, next) {
+  //verifytoken
+  var uid = await admin.auth().verifyIdToken(req.query.token).then(decodedToken => {
+    return decodedToken.uid
+  }).catch(e => {
+    return false
+  })
+  if (!uid) { res.send("token invalid"); return }
+  //change status
+  var data = {
+    status: 2
+  }
+  db.collection('pesanan').doc(req.query.id_pesanan).update(data).then(wr => {
+    res.send("sukses")
   })
 })
 
