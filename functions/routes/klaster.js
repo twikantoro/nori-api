@@ -89,7 +89,7 @@ router.get('/create', async function (req, res, next) {
     nama: req.query.nama,
     jadwal: req.query.jadwal,
     //    kode: req.query.kode,
-    durasi: req.query.kode,
+    durasi: req.query.durasi,
     prefix: req.query.prefix
   }
   var step3 = await db.collection('klaster').doc().set(params).then(response => {
@@ -176,7 +176,10 @@ router.get('/hapus', async function (req, res, next) {
     if (response.empty) return false
     try {
       response.forEach(layanan => {
-        db.collection('layanan').doc(layanan.id).delete()
+        db.collection('layanan').doc(layanan.id).delete().then(wr => {
+          //delete keywords
+          deleteKeywords(layanan.id, 'layanan')
+        })
       })
     } catch (error) {
       //nothing HAHA
@@ -211,5 +214,18 @@ router.get('/getRelatedData', async function (req, res, next) {
   }
   res.send(returned)
 })
+
+async function deleteKeywords(id, jenis) {
+  //console.log("DELETEKEYWROD RUNNING", id)
+  var id_jenis = jenis === 'gerai' ? 'id_gerai' : 'id_layanan'
+  //console.log("jenisid", id_jenis)
+  //delete keywrods
+  db.collection('keyword').where(id_jenis, '==', id).get().then(snapshot => {
+    snapshot.forEach(doc => {
+      console.log("FOUNDDOC", doc.id)
+      db.collection('keyword').doc(doc.id).delete().then(wr => { })
+    })
+  })
+}
 
 module.exports = router;

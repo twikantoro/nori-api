@@ -85,7 +85,7 @@ router.get('/selesai', async function (req, res, next) {
   })
 })
 
-router.get('/tidakHadir', async function (req, res, next) {
+router.get('/tunda', async function (req, res, next) {
   //verifytoken
   var uid = await admin.auth().verifyIdToken(req.query.token).then(decodedToken => {
     return decodedToken.uid
@@ -98,9 +98,57 @@ router.get('/tidakHadir', async function (req, res, next) {
     status: 2
   }
   db.collection('pesanan').doc(req.query.id_pesanan).update(data).then(wr => {
+    //kasih penalti
+    db.collection('pesanan').doc(req.query.id_pesanan).get().then(doc => {
+      let id_pengantri = ''
+
+      id_pengantri = doc.data().id_pengantri
+
+      //get pengantri
+      db.collection('pengantri').doc(id_pengantri).get().then(doc => {
+        let pengantri = {}
+
+        pengantri = { ...doc.data(), id: doc.id }
+
+        let newPenalti = pengantri.penalti ? pengantri.penalti : new Array(0)
+        newPenalti = newPenalti.concat({
+          id_pesanan: req.query.id_pesanan
+        })
+        let data = {
+          penalti: newPenalti
+        }
+        //update
+        db.collection('pengantri').doc(id_pengantri).update(data).then(wr => { })
+        //sudah 3 ?
+        if (newPenalti.length == 3) {
+          let data = {
+            banned: getBanExpiration()
+          }
+          db.collection('pengantri').doc(id_pengantri).update(data).then(wr => { })
+        }
+      })
+    })
+    //
     res.send("sukses")
   })
 })
+
+router.get('/diLokasi', async function (req, res, next) {
+  db.collection('pesanan').doc(req.query.id_pesanan).update({
+    status: 3
+  }).then(wr=>{res.send("sukses")})
+})
+
+function getBanExpiration() {
+  let date = new Date()
+  date.setDate(date.getDate() + 7);
+  let year = date.getFullYear()
+  let month = date.getMonth() + 1
+  let newMonth = month < 10 ? "0" + month : month
+  let day = date.getDate()
+  let newDay = day < 10 ? "0" + day : day
+  return parseInt(year.toString() + newMonth + newDay)
+}
 
 async function amIpengantri(data) {
   //get uid

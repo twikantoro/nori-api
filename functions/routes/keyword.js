@@ -69,4 +69,13 @@ router.get('/deleteInvalid', async function (req, res, next) {
 //   })
 // })
 
+router.getKeywords = function (nama, kode) {
+  let namas = nama.toLowerCase().split(" ")
+  namas = namas.concat(kode.toLowerCase())
+  let uniq = [...new Set(namas)]
+  return uniq
+}
+
+
+
 module.exports = router

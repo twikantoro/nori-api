@@ -3,6 +3,8 @@ var router = express.Router();
 var admin = require('../config/firebaseAdminConfig')
 var db = admin.firestore()
 
+var keywordRouter = require('./keyword')
+
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   res.send('respond with a resource');
@@ -37,11 +39,11 @@ router.get('/create', async function (req, res, next) {
     wilayah: req.query.wilayah,
     tautan: req.query.tautan
   }
-  console.log("data", data)
-  var id_gerai = db.collection('gerai').doc().set(data).then(response => {
-    res.send(response)
-  }).catch(e => {
-    res.send(e)
+  //console.log("data", data)
+  //create the gerai
+  db.collection('gerai').doc().set(data).then(response => {
+    createKeywords(data.nama, data.kode, 'gerai')
+    res.send("sukses")
   })
 });
 
@@ -82,6 +84,9 @@ router.get('/deletebykode', async function (req, res, next) {
     return false
   })
   db.collection('gerai').doc(docid).delete().then(result => {
+    //delete keywords
+    console.log("DELETEKEYWORD BY IDGERAI", docid)
+    deleteKeywords(docid, 'gerai')
     res.send("OK")
   }).catch(e => {
     res.send(e)
@@ -189,6 +194,8 @@ router.get('/edit', async function (req, res, next) {
   }
   //step2: edit!
   var step2 = await db.collection('gerai').doc(req.query.id_gerai).update(data).then(response => {
+    //update keywords
+    updateKeywords({ ...data, id: req.query.id_gerai }, 'gerai')
     return "berhasil"
   }).catch(e => {
     return e
@@ -339,6 +346,89 @@ async function combineForGetResult(gerais, klasters, layanans) {
     })
     resolve(newGerais)
   })
+}
+
+async function createKeywords(nama, kode, jenis) {
+  //console.log("IT IS RUNNING", nama, kode, jenis)
+  //get the thing (gerai or layanan)
+  var thething = await db.collection(jenis).where('kode', '==', kode).get().then(snapshot => {
+    var returned = {}
+    snapshot.forEach(doc => {
+      console.log("FOUND", doc.data())
+      returned = { ...doc.data(), id: doc.id }
+    })
+    return returned
+  })
+  //console.log("THETHING", thething)
+  if (!thething.id) { return }
+  //get keywords
+  var keywords = keywordRouter.getKeywords(nama, kode)
+  //create keywords
+  keywords.forEach(keyword => {
+    let data = {
+      type: jenis,
+      keyword: keyword
+    }
+    if (jenis === 'gerai') {
+      data.id_gerai = thething.id
+    } else {
+      data.id_layanan = thething.id
+    }
+    db.collection('keyword').doc().set(data).then(wr => { })
+  })
+}
+
+async function deleteKeywords(id, jenis) {
+  //console.log("DELETEKEYWROD RUNNING", id)
+  var id_jenis = jenis === 'gerai' ? 'id_gerai' : 'id_layanan'
+  //console.log("jenisid", id_jenis)
+  //delete keywrods
+  db.collection('keyword').where(id_jenis, '==', id).get().then(snapshot => {
+    snapshot.forEach(doc => {
+      console.log("FOUNDDOC", doc.id)
+      db.collection('keyword').doc(doc.id).delete().then(wr => { })
+    })
+  })
+}
+
+async function updateKeywords(thething, jenis) {
+  var keywords = keywordRouter.getKeywords(thething.nama, thething.kode)
+  var done = []
+  var id_jenis = jenis === 'gerai' ? 'id_gerai' : 'id_layanan'
+  var deleting = await db.collection('keyword').where(id_jenis, '==', thething.id).get().then(snapshot => {
+    snapshot.forEach(doc => {
+      if (keywords.includes(doc.data().keyword)) {
+        //mengandung
+        done = done.concat(doc.data().keyword)
+      } else {
+        //tidak mengandung, hapus
+        db.collection('keyword').doc(doc.id).delete().then(wr => { console.log("DELETED KEYWORD", doc.data().keyword) })
+      }
+    })
+    return true
+  })
+  if (deleting) {
+    //get difference
+    var diff = []
+    keywords.forEach(keyword => {
+      if (!done.includes(keyword)) {
+        diff = diff.concat(keyword)
+      }
+    })
+    //create keyword
+    diff.forEach(newkey => {
+      let data = {
+        keyword: newkey,
+        type: jenis
+      }
+      if (jenis === 'gerai') {
+        data.id_gerai = thething.id
+      } else {
+        data.id_layanan = thething.id
+      }
+      db.collection('keyword').doc().set(data).then(wr=>{console.log("CREATED KEYWORD",newkey)})
+    })
+  }
 }
 
 module.exports = router;

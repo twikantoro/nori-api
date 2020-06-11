@@ -4,6 +4,7 @@ var admin = require('../config/firebaseAdminConfig')
 var db = admin.firestore()
 
 var pesanan = require('./pesanan')
+var keywordRouter = require('./keyword')
 
 router.get('/create', async function (req, res, next) {
   //step1: verify ownership
@@ -21,6 +22,7 @@ router.get('/create', async function (req, res, next) {
     aktif: true
   }
   db.collection('layanan').doc().set(data).then(response => {
+    createKeywords(data.nama, data.kode, 'layanan')
     res.send("sukses")
   }).catch(e => {
     res.send(e)
@@ -59,6 +61,7 @@ router.get('/hapus', async function (req, res, next) {
   }
   //step2: hapus
   var step2 = await db.collection('layanan').doc(req.query.id_layanan).delete().then(response => {
+    deleteKeywords(req.query.id_layanan, 'layanan')
     return "sukses"
   }).catch(e => {
     return e
@@ -81,6 +84,7 @@ router.get('/edit', async function (req, res, next) {
     syarat: req.query.syarat,
   }
   var step2 = await db.collection('layanan').doc(req.query.id_layanan).update(data).then(response => {
+    updateKeywords({ ...data, id: req.query.id_layanan }, 'layanan')
     return "sukses"
   }).catch(e => {
     return e
@@ -662,12 +666,17 @@ router.get('/getLayananData', async function (req, res, next) {
   })
 
   //step5: modify the data
-  let newKlaster = klasters[0]
-//  newKlaster.slotLimit = getSlotLimit(newKlaster)
+  let newKlaster = {}
+  klasters.forEach(klaster => {
+    if (klaster.id === layanan.id_klaster) {
+      newKlaster = klaster
+    }
+  })
+  //  newKlaster.slotLimit = getSlotLimit(newKlaster)
   layanan.klaster = newKlaster
   let jadwal = JSON.parse(layanan.klaster.jadwal)
   layanan.forSelect = getForSelect(jadwal)
-  
+
   res.send(layanan)
 })
 
@@ -781,5 +790,87 @@ function isTheDayLibur(hariKode, jadwal) {
   return false
 }
 
+async function createKeywords(nama, kode, jenis) {
+  //console.log("IT IS RUNNING", nama, kode, jenis)
+  //get the thing (gerai or layanan)
+  var thething = await db.collection(jenis).where('kode', '==', kode).get().then(snapshot => {
+    var returned = {}
+    snapshot.forEach(doc => {
+      console.log("FOUND", doc.data())
+      returned = { ...doc.data(), id: doc.id }
+    })
+    return returned
+  })
+  //console.log("THETHING", thething)
+  if (!thething.id) { return }
+  //get keywords
+  var keywords = keywordRouter.getKeywords(nama, kode)
+  //create keywords
+  keywords.forEach(keyword => {
+    let data = {
+      type: jenis,
+      keyword: keyword
+    }
+    if (jenis === 'gerai') {
+      data.id_gerai = thething.id
+    } else {
+      data.id_layanan = thething.id
+    }
+    db.collection('keyword').doc().set(data).then(wr => { })
+  })
+}
+
+async function deleteKeywords(id, jenis) {
+  //console.log("DELETEKEYWROD RUNNING", id)
+  var id_jenis = jenis === 'gerai' ? 'id_gerai' : 'id_layanan'
+  //console.log("jenisid", id_jenis)
+  //delete keywrods
+  db.collection('keyword').where(id_jenis, '==', id).get().then(snapshot => {
+    snapshot.forEach(doc => {
+      console.log("FOUNDDOC", doc.id)
+      db.collection('keyword').doc(doc.id).delete().then(wr => { })
+    })
+  })
+}
+
+async function updateKeywords(thething, jenis) {
+  var keywords = keywordRouter.getKeywords(thething.nama, thething.kode)
+  var done = []
+  var id_jenis = jenis === 'gerai' ? 'id_gerai' : 'id_layanan'
+  var deleting = await db.collection('keyword').where(id_jenis, '==', thething.id).get().then(snapshot => {
+    snapshot.forEach(doc => {
+      if (keywords.includes(doc.data().keyword)) {
+        //mengandung
+        done = done.concat(doc.data().keyword)
+      } else {
+        //tidak mengandung, hapus
+        db.collection('keyword').doc(doc.id).delete().then(wr => { console.log("DELETED KEYWORD", doc.data().keyword) })
+      }
+    })
+    return true
+  })
+  if (deleting) {
+    //get difference
+    var diff = []
+    keywords.forEach(keyword => {
+      if (!done.includes(keyword)) {
+        diff = diff.concat(keyword)
+      }
+    })
+    //create keyword
+    diff.forEach(newkey => {
+      let data = {
+        keyword: newkey,
+        type: jenis
+      }
+      if (jenis === 'gerai') {
+        data.id_gerai = thething.id
+      } else {
+        data.id_layanan = thething.id
+      }
+      db.collection('keyword').doc().set(data).then(wr => { console.log("CREATED KEYWORD", newkey) })
+    })
+  }
+}
 
 module.exports = router;
