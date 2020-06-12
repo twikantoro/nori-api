@@ -7,6 +7,12 @@ router.get('/', async function (req, res, next) {
   res.send("staf")
 })
 
+router.get('/undurDiri', async function (req, res, next) {
+  db.collection('staf').doc(req.query.id_staf).update({
+    id_gerai: ''
+  }).then(wr=>{res.send("sukses")})
+})
+
 router.get('/getOrCreate', async function (req, res, next) {
   //verify token and get uid
   var uid = await admin.auth().verifyIdToken(req.query.token).then(decodedToken => {

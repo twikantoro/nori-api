@@ -11,7 +11,7 @@ router.get('/pesan', async function (req, res, next) {
   }
   //create pesanan
   let date = new Date()
-  let waktu = date.getTime() / 1000
+  let waktu = Math.floor(date.getTime() / 1000)
   var data = {
     id_pengantri: req.query.id_pengantri,
     id_klaster: req.query.id_klaster,
@@ -78,7 +78,8 @@ router.get('/selesai', async function (req, res, next) {
   if (!uid) { res.send("token invalid"); return }
   //change status
   var data = {
-    status: 1
+    status: 1,
+    waktu_selesai: Math.floor(new Date().getTime() / 1000)
   }
   db.collection('pesanan').doc(req.query.id_pesanan).update(data).then(wr => {
     res.send("sukses")
@@ -101,32 +102,33 @@ router.get('/tunda', async function (req, res, next) {
     //kasih penalti
     db.collection('pesanan').doc(req.query.id_pesanan).get().then(doc => {
       let id_pengantri = ''
-
       id_pengantri = doc.data().id_pengantri
+      //telat?
+      if (isTelat(req.query.perkiraan)) {
+        //get pengantri
+        db.collection('pengantri').doc(id_pengantri).get().then(doc => {
+          let pengantri = {}
 
-      //get pengantri
-      db.collection('pengantri').doc(id_pengantri).get().then(doc => {
-        let pengantri = {}
+          pengantri = { ...doc.data(), id: doc.id }
 
-        pengantri = { ...doc.data(), id: doc.id }
-
-        let newPenalti = pengantri.penalti ? pengantri.penalti : new Array(0)
-        newPenalti = newPenalti.concat({
-          id_pesanan: req.query.id_pesanan
-        })
-        let data = {
-          penalti: newPenalti
-        }
-        //update
-        db.collection('pengantri').doc(id_pengantri).update(data).then(wr => { })
-        //sudah 3 ?
-        if (newPenalti.length == 3) {
+          let newPenalti = pengantri.penalti ? pengantri.penalti : new Array(0)
+          newPenalti = newPenalti.concat({
+            id_pesanan: req.query.id_pesanan
+          })
           let data = {
-            banned: getBanExpiration()
+            penalti: newPenalti
           }
+          //update
           db.collection('pengantri').doc(id_pengantri).update(data).then(wr => { })
-        }
-      })
+          //sudah 3 ?
+          if (newPenalti.length == 3) {
+            let data = {
+              banned: getBanExpiration()
+            }
+            db.collection('pengantri').doc(id_pengantri).update(data).then(wr => { })
+          }
+        })
+      }
     })
     //
     res.send("sukses")
@@ -136,8 +138,33 @@ router.get('/tunda', async function (req, res, next) {
 router.get('/diLokasi', async function (req, res, next) {
   db.collection('pesanan').doc(req.query.id_pesanan).update({
     status: 3
-  }).then(wr=>{res.send("sukses")})
+  }).then(wr => { res.send("sukses") })
 })
+
+router.get('/belumSelesai', async function (req, res, next) {
+  db.collection('pesanan').doc(req.query.id_pesanan).update({
+    status: admin.firestore.FieldValue.delete()
+  }).then(wr => { res.send("sukses") })
+})
+
+router.get('/confirmSelesai', async function (req, res, next) {
+  db.collection('pesanan').doc(req.query.id_pesanan).update({
+    status: 4
+  }).then(wr => { res.send("sukses") })
+})
+
+function isTelat(waktu) {
+  let date = new Date()
+  let jam = date.getHours() < 10 ? "0" + date.getHours() : date.getHours()
+  let menit = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+  let sekarang = jam + ":" + menit
+  console.log("comparing", waktu, sekarang)
+  if (timeToMinutes(waktu) < timeToMinutes(sekarang)) {
+    return true
+  } else {
+    return false
+  }
+}
 
 function getBanExpiration() {
   let date = new Date()

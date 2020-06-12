@@ -53,4 +53,11 @@ router.get('/getData', async function (req, res, next) {
   }
 })
 
+router.get('/clearBan', async function (req, res, next) {
+  db.collection('pengantri').doc(req.query.id_pengantri).update({
+    banned: admin.firestore.FieldValue.delete(),
+    penalti: admin.firestore.FieldValue.delete()
+  }).then(wr=>{res.send("sukses")})
+})
+
 module.exports = router
