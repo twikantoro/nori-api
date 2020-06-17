@@ -68,21 +68,22 @@ router.get('/create', async function (req, res, next) {
     return
   }
   //step2 get the gerai id
-  var step2 = await db.collection('gerai').where('kode', '==', req.query.kode).get().then(response => {
-    if (response.empty) {
-      return false
-    } else {
-      var shit = ""
-      response.forEach(doc => {
-        shit = doc.id
-      })
-      return shit
-    }
-  })
-  if (!step2) {
-    res.send("unable to find gerai id")
-    return
-  }
+  // var step2 = await db.collection('gerai').where('kode', '==', req.query.kode).get().then(response => {
+  //   if (response.empty) {
+  //     return false
+  //   } else {
+  //     var shit = ""
+  //     response.forEach(doc => {
+  //       shit = doc.id
+  //     })
+  //     return shit
+  //   }
+  // })
+  // if (!step2) {
+  //   res.send("unable to find gerai id")
+  //   return
+  // }
+  var step2 = req.query.id_gerai
   //step3 execute create
   var params = {
     id_gerai: step2,
@@ -227,5 +228,18 @@ async function deleteKeywords(id, jenis) {
     })
   })
 }
+
+router.get('/deleteInvalid', async function (req, res, next) {
+  res.send("workin")
+  db.collection('klaster').get().then(respon=>{
+    respon.forEach(klaster=>{
+      db.collection('gerai').doc(klaster.id_gerai).get().then(respon=>{
+        if(!respon.id){
+          console.log("gerai missing:",klaster.id_gerai)
+        }
+      })
+    })
+  })
+})
 
 module.exports = router;

@@ -84,6 +84,8 @@ router.get('/deletebykode', async function (req, res, next) {
     return false
   })
   db.collection('gerai').doc(docid).delete().then(result => {
+    //delete gerai belongings
+    deleteGeraiBelongings(docid)
     //delete keywords
     console.log("DELETEKEYWORD BY IDGERAI", docid)
     deleteKeywords(docid, 'gerai')
@@ -92,6 +94,30 @@ router.get('/deletebykode', async function (req, res, next) {
     res.send(e)
   })
 })
+
+async function deleteGeraiBelongings(id_gerai) {
+  var klaster_ids = await db.collection('klaster').where('id_gerai', '==', id_gerai).get().then(respon => {
+    if (respon.empty) return false
+    var returned = []
+    respon.forEach(klaster => {
+      returned = returned.concat(klaster.id)
+      db.collection('klaster').doc(klaster.id).delete().then(wr => { })
+    })
+    return returned
+  })
+  if (!klaster_ids) return
+  klaster_ids.forEach(klaster_id => {
+    db.collection('layanan').where('id_klaster', '==', klaster_id).get().then(respon => {
+      respon.forEach(layanan => {
+        //delete layanan
+        db.collection('layanan').doc(layanan.id).delete().then(wr => { })
+        //delete keyword layanan
+        deleteKeywords(layanan.id, 'layanan')
+      })
+    })
+  })
+}
+
 async function insertLayananToTheseGerais(gerais) {
   for (const gerai of gerais) {
     var layanans = await db.collection('layanans').where('id_gerai', '==', gerai.id).get().then(snapshot => {
@@ -426,7 +452,7 @@ async function updateKeywords(thething, jenis) {
       } else {
         data.id_layanan = thething.id
       }
-      db.collection('keyword').doc().set(data).then(wr=>{console.log("CREATED KEYWORD",newkey)})
+      db.collection('keyword').doc().set(data).then(wr => { console.log("CREATED KEYWORD", newkey) })
     })
   }
 }

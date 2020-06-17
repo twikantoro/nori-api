@@ -585,7 +585,7 @@ async function getKlasterIDsByKeywordsOfLayanans(keywords) {
     var klasterIDs = new Array(0)
     for (let i = 0; i < uniq.length; i++) {
       db.collection('layanan').doc(uniq[i]).get().then(response => {
-        if (!response.empty) {
+        if (!response.empty && response.data()) {
           klasterIDs = klasterIDs.concat(response.data().id_klaster)
         }
         if (i === uniq.length - 1) {
@@ -872,5 +872,19 @@ async function updateKeywords(thething, jenis) {
     })
   }
 }
+
+router.get('/deleteInvalid', async function (req, res, next) {
+  res.send("working")
+  db.collection('layanan').get().then(respon => {
+    respon.forEach(layanan => {
+      console.log("looking for klaster ",layanan.data().id_klaster)
+      db.collection('klaster').doc(layanan.data().id_klaster).get().then(doc => {
+        if (!doc.id) {
+          console.log("klaster missing:", layanan.data().id_klaster)
+        }
+      })
+    })
+  })
+})
 
 module.exports = router;
