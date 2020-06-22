@@ -91,6 +91,12 @@ router.get('/bukaKlaster', async function (req, res, next) {
     tanggal: req.query.tanggal
   }
   db.collection('pesanan').doc().set(data).then(wr => {
+    //notification
+    notify({
+      id_klaster: req.query.id_klaster,
+      urutan: 1
+    })
+
     res.send("sukses")
   })
 })
@@ -109,6 +115,14 @@ router.get('/selesai', async function (req, res, next) {
     waktu_selesai: Math.floor(new Date().getTime() / 1000)
   }
   db.collection('pesanan').doc(req.query.id_pesanan).update(data).then(wr => {
+    //notification
+    db.collection('pesanan').doc(req.query.id_pesanan).get().then(doc => {
+      notify({
+        id_klaster: doc.data().id_klaster,
+        urutan: parseInt(doc.data().urutan) + 1
+      })
+    })
+
     res.send("sukses")
   })
 })
@@ -128,6 +142,12 @@ router.get('/tunda', async function (req, res, next) {
   db.collection('pesanan').doc(req.query.id_pesanan).update(data).then(wr => {
     //kasih penalti
     db.collection('pesanan').doc(req.query.id_pesanan).get().then(doc => {
+      //notification
+      notify({
+        id_klaster: doc.data().id_klaster,
+        urutan: parseInt(doc.data().urutan) + 1
+      })
+
       let id_pengantri = ''
       id_pengantri = doc.data().id_pengantri
       //telat?
@@ -179,6 +199,77 @@ router.get('/confirmSelesai', async function (req, res, next) {
     status: 4
   }).then(wr => { res.send("sukses") })
 })
+
+function notify(data) {
+  var id_klaster = data.id_klaster
+  var urutan = data.urutan
+  var tanggal = getTanggalHariIni().toString()
+  //get all pesanan in that day in that klaster
+  console.log('PARAMS', id_klaster, tanggal)
+  db.collection('pesanan').where('id_klaster', '==', id_klaster).where('tanggal', '==', tanggal).get().then(snapshot => {
+    if (snapshot.empty) console.log("EMPTY")
+    snapshot.forEach(pesanan => {
+      if (pesanan.data().slot != 0) {
+        //pengantri ==> pengguna
+        var prefix = pesanan.data().prefix
+        var myUrutan = pesanan.data().slot
+        console.log("comparing " + prefix, urutan, myUrutan)
+        if ((myUrutan == urutan + 10) || (urutan == 1 && myUrutan < 11)) {
+          console.log("WILL NOTIFY", prefix + myUrutan)
+          db.collection('pengantri').doc(pesanan.data().id_pengantri).get().then(doc => {
+            //pengguna ==> fcmToken
+            db.collection('pengguna').doc(doc.data().id_pengguna).get().then(doc => {
+              if (!doc.data()) return
+              //notify
+              var registrationToken = doc.data().fcmToken
+              var message = {
+                notification: {
+                  title: 'Nori',
+                  body: 'Antrian sudah mencapai ' + prefix + urutan + ' (anda ' + prefix + myUrutan + ')'
+                },
+                token: registrationToken
+              }
+              admin.messaging().send(message).then(response => {
+                console.log("send msg success")
+              }).catch(e => {
+                console.log("send msg failed", e)
+              })
+            })
+          })
+        }
+      }
+    })
+  })
+
+}
+
+router.get('/tesFCM', async function (req, res, next) {
+  var registrationToken = 'dQ37Wme-R2Gq6ZcZxDyZSW:APA91bE080h8Lk2GjnLJ1xi2NPnzrmcpgrO9OTITNapZ-uNoEtiWOgubrgMWWGthqy6aHBnrv4VVEr0lea6zlUfBG-n71S3jv1p_XjmgBmTyWUPB154tDVHCNzgNTdbPp2dnsn7NLQPO'
+  var message = {
+    notification: {
+      title: 'Nori',
+      body: 'Antrian sudah mencapai xx'
+    },
+    token: registrationToken
+  }
+
+  admin.messaging().send(message).then(response => {
+    console.log("send msg success")
+  }).catch(e => {
+    console.log("send msg failed", e)
+  })
+  res.send("ok")
+})
+
+function getTanggalHariIni() {
+  let date = new Date()
+  let year = date.getFullYear()
+  let month = date.getMonth() + 1
+  let newMonth = month < 10 ? "0" + month : month
+  let day = date.getDate()
+  let newDay = day < 10 ? "0" + day : day
+  return parseInt(year.toString() + newMonth + newDay)
+}
 
 function isTelat(waktu) {
   let date = new Date()
