@@ -214,7 +214,7 @@ function notify(data) {
         var prefix = pesanan.data().prefix
         var myUrutan = pesanan.data().slot
         console.log("comparing " + prefix, urutan, myUrutan)
-        if ((myUrutan == urutan + 10) || (urutan == 1 && myUrutan < 11)) {
+        if ((myUrutan == urutan + 10) || (urutan == 1 && myUrutan < 11) || urutan == myUrutan) {
           console.log("WILL NOTIFY", prefix + myUrutan)
           db.collection('pengantri').doc(pesanan.data().id_pengantri).get().then(doc => {
             //pengguna ==> fcmToken

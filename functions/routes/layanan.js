@@ -12,6 +12,11 @@ router.get('/create', async function (req, res, next) {
   if (!step1) {
     res.send("bukan milikmu"); return
   }
+  //will abort if found duplicate kode
+  var uniq = await isUniqueKode(req.query)
+  if (!uniq) {
+    res.send("Kode sudah dipakai"); return
+  }
   //step2: create
   var data = {
     id_klaster: req.query.id_klaster,
@@ -28,6 +33,38 @@ router.get('/create', async function (req, res, next) {
     res.send(e)
   })
 })
+
+async function isUniqueKode(data) {
+  return new Promise(async function (resolve, reject) {
+    var id_layanan = data.id_layanan ? data.id_layanan : ''
+    var id_gerai = await db.collection('klaster').doc(data.id_klaster).get().then(doc => {
+      return doc.data().id_gerai
+    })
+    var klasters = await db.collection('klaster').where('id_gerai', '==', id_gerai).get().then(snapshot => {
+      if (snapshot.empty) return []
+      var klastersB = []
+      snapshot.forEach(klaster => {
+        klastersB = klastersB.concat({ ...klaster.data(), id: klaster.id })
+      })
+      return klastersB
+    })
+    for (let i = 0; i < klasters.length; i++) {
+      db.collection('layanan').where('id_klaster', '==', klasters[i].id).get().then(snapshot => {
+        snapshot.forEach(layanan => {
+          if (layanan.data().kode === data.kode) {
+            //compare id_layanan
+            if (id_layanan !== layanan.id) {
+              resolve(false)
+            }
+          }
+        })
+        if (i + 1 === klasters.length) {
+          resolve(true)
+        }
+      })
+    }
+  })
+}
 
 async function amITheOwner(query) {
   return new Promise(async function (resolve, reject) {
@@ -74,6 +111,11 @@ router.get('/edit', async function (req, res, next) {
   var step1 = await amITheOwner(req.query)
   if (!step1) {
     res.send("bukan milikmu"); return
+  }
+  //will abort if found duplicate kode
+  var uniq = await isUniqueKode(req.query)
+  if (!uniq) {
+    res.send("Kode sudah dipakai"); return
   }
   //step2: edit
   var data = {
@@ -877,7 +919,7 @@ router.get('/deleteInvalid', async function (req, res, next) {
   res.send("working")
   db.collection('layanan').get().then(respon => {
     respon.forEach(layanan => {
-      console.log("looking for klaster ",layanan.data().id_klaster)
+      console.log("looking for klaster ", layanan.data().id_klaster)
       db.collection('klaster').doc(layanan.data().id_klaster).get().then(doc => {
         if (!doc.id) {
           console.log("klaster missing:", layanan.data().id_klaster)

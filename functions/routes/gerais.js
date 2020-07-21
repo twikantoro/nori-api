@@ -11,13 +11,13 @@ router.get('/', function (req, res, next) {
 });
 router.get('/create', async function (req, res, next) {
   //step1: check if codename exists
-  var step1 = await db.collection('gerai').where('code', '==', req.query.kode).get().then(result => {
+  var step1 = await db.collection('gerai').where('kode', '==', req.query.kode).get().then(result => {
     if (!result.empty) {
       return true
     }
   })
   if (step1) {
-    res.send('exists')
+    res.send('Kode gerai sudah terpakai')
     return null
   }
   //step2
@@ -218,6 +218,24 @@ router.get('/edit', async function (req, res, next) {
   if (!step1) {
     res.send("bukan milikmu"); return
   }
+  //step1b: kode sudah dipakai?
+  var step1a = await db.collection('gerai').where('kode', '==', data.kode).get().then(snapshot => {
+    if (snapshot.empty) return true
+    var exists = 0
+    snapshot.forEach(gerai => {
+      //make sure its not the current gerai
+      if (gerai.id !== req.query.id_gerai) {
+        if (gerai.data().kode === data.kode) {
+          exists++
+        }
+      }
+    })
+    //false if kode already used
+    return exists ? false : true
+  })
+  if (!step1a) {
+    res.send("Kode gerai sudah terpakai"); return
+  }
   //step2: edit!
   var step2 = await db.collection('gerai').doc(req.query.id_gerai).update(data).then(response => {
     //update keywords
@@ -229,7 +247,7 @@ router.get('/edit', async function (req, res, next) {
   if (step2 !== 'berhasil') {
     res.send(step2)
   } else {
-    res.send("berhasil")
+    res.send("sukses")
   }
 })
 
