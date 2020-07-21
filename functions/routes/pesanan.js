@@ -119,7 +119,7 @@ router.get('/selesai', async function (req, res, next) {
     db.collection('pesanan').doc(req.query.id_pesanan).get().then(doc => {
       notify({
         id_klaster: doc.data().id_klaster,
-        urutan: parseInt(doc.data().urutan) + 1
+        urutan: parseInt(doc.data().slot) + 1
       })
     })
 
@@ -145,7 +145,7 @@ router.get('/tunda', async function (req, res, next) {
       //notification
       notify({
         id_klaster: doc.data().id_klaster,
-        urutan: parseInt(doc.data().urutan) + 1
+        urutan: parseInt(doc.data().slot) + 1
       })
 
       let id_pengantri = ''
